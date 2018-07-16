@@ -31,7 +31,7 @@ line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
 # TODO: deploy時に確認
-controller_host = os.environ('CONTROLLER_HOST')
+controller_host = os.environ['CONTROLLER_HOST']
 list_url = 'http://{}/commands/'.format(controller_host)
 transmit_url = 'http://{}/commands/transmit/{}'.format(controller_host, '{}')
 
