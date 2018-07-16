@@ -1,8 +1,8 @@
 import os
+import re
 import sys
 
 from flask import Flask, request, abort
-
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -12,6 +12,7 @@ from linebot.exceptions import (
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
+import requests
 
 app = Flask(__name__)
 
@@ -28,6 +29,10 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
+
+# TODO: deploy時に確認
+URL = 'http://3b5c2533.ngrok.io/commands/transmit/{}'
+
 
 @app.route("/")
 def hello_world():
@@ -53,9 +58,22 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    text = event.message.text
+    if '冷房' in text or '暖房' in text:
+        mode = 'c' if '冷房' in text else 'w'
+        temps = re.findall(r'[0-9]+', text)
+        if temps:
+            id_ = '{}{}'.format(mode, temps[0])
+            r = requests.post(URL.format(id_))
+            text = 'エアコン操作したよ(・∀・)'
+        else:
+            text = '温度を設定してね(・∀・)'
+    else:
+        text = '冷房なのか暖房なのかはっきりしてね(・∀・)'
+
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=event.message.text))
+        TextSendMessage(text=text))
 
 
 if __name__ == "__main__":
