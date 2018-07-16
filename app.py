@@ -71,7 +71,7 @@ def handle_message(event):
         temps = re.findall(r'[0-9]+', text)
         if temps:
             id_ = '{}{}'.format(mode, temps[0])
-            if id_ in commands
+            if id_ in commands:
                 r = requests.post(T_URL.format(id_))
                 text = 'エアコン操作したよ(・∀・)'
             else:
