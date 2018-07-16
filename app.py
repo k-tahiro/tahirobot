@@ -67,7 +67,10 @@ def handle_message(event):
     ]
 
     text = event.message.text
-    if '冷房' in text or '暖房' in text:
+    if '停止' in text:
+        r = requests.post(transmit_url.format('stop'))
+        text = 'エアコン止めたわ(・∀・)（多分）'
+    elif '冷房' in text or '暖房' in text:
         mode = 'c' if '冷房' in text else 'w'
         temps = re.findall(r'[0-9]+', text)
         if temps:
