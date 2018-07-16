@@ -31,8 +31,9 @@ line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
 # TODO: deploy時に確認
-L_URL = 'http://3b5c2533.ngrok.io/commands/'
-T_URL = 'http://3b5c2533.ngrok.io/commands/transmit/{}'
+controller_host = os.environ('CONTROLLER_HOST')
+list_url = 'http://{}/commands/'.format(controller_host)
+transmit_url = 'http://{}/commands/transmit/{}'.format(controller_host, '{}')
 
 
 @app.route("/")
@@ -59,7 +60,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    r = requests.get(L_URL)
+    r = requests.get(list_url)
     commands = [
         command['id']
         for command in r.json()
@@ -72,7 +73,7 @@ def handle_message(event):
         if temps:
             id_ = '{}{}'.format(mode, temps[0])
             if id_ in commands:
-                r = requests.post(T_URL.format(id_))
+                r = requests.post(transmit_url.format(id_))
                 text = 'エアコン操作したよ(・∀・)'
             else:
                 text = 'データベースに設定がなかったわ(・∀・)'
