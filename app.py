@@ -69,7 +69,7 @@ def handle_message(event):
     text = event.message.text
     if '停止' in text:
         r = requests.post(transmit_url.format('stop'))
-        text = 'エアコン止めたわ(・∀・)（多分）'
+        text = 'エアコン止めたわ(・∀・)' if r.json()['success'] else '止めるの失敗したわ(・∀・)'
     elif '冷房' in text or '暖房' in text:
         mode = 'c' if '冷房' in text else 'w'
         temps = re.findall(r'[0-9]+', text)
@@ -77,7 +77,7 @@ def handle_message(event):
             id_ = '{}{}'.format(mode, temps[0])
             if id_ in commands:
                 r = requests.post(transmit_url.format(id_))
-                text = 'エアコン操作したよ(・∀・)'
+                text = 'エアコン操作したよ(・∀・)' if r.json()['success'] else 'なんか失敗したわ(・∀・)'
             else:
                 text = 'データベースに設定がなかったわ(・∀・)'
         else:
