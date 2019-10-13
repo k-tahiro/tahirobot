@@ -74,7 +74,7 @@ def handle_message(event):
             '止めるの失敗したわ(・∀・)'
     elif '冷房' in text or '暖房' in text:
         mode = 'c' if '冷房' in text else 'w'
-        temps = re.findall(r'[0-9]+(\.[0-9]+)?', text)
+        temps = re.findall(r'[0-9]+(?:\.[0-9]+)?', text)
         if temps:
             key = '{}{}'.format(mode, temps[0])
             if key in codes:
