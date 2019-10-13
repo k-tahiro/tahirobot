@@ -61,9 +61,9 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     r = requests.get(list_url)
-    commands = [
-        command['id']
-        for command in r.json()
+    codes = [
+        code['code_key']
+        for code in r.json()
     ]
 
     text = event.message.text
@@ -74,11 +74,11 @@ def handle_message(event):
             '止めるの失敗したわ(・∀・)'
     elif '冷房' in text or '暖房' in text:
         mode = 'c' if '冷房' in text else 'w'
-        temps = re.findall(r'[0-9]+', text)
+        temps = re.findall(r'[0-9]+(\.[0-9]+)?', text)
         if temps:
-            id_ = '{}{}'.format(mode, temps[0])
-            if id_ in commands:
-                r = requests.post(transmit_url.format(id_))
+            key = '{}{}'.format(mode, temps[0])
+            if key in codes:
+                r = requests.post(transmit_url.format(key))
                 text = 'エアコン操作したよ(・∀・)' \
                     if int(r.text) == 1 else \
                     'なんか失敗したわ(・∀・)'
