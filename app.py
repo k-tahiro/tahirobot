@@ -40,6 +40,7 @@ transmit_url = 'http://{}/codes/{}'.format(controller_host, '{}')
 def hello_world():
     return "hello world!"
 
+
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
