@@ -62,6 +62,8 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text
+
+    code_key = None
     r_text = None
 
     if '停止' in text:
